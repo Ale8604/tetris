@@ -1,4 +1,4 @@
-"use strict"
+
 
 var velocidad=50000; //velocidad del juego
         var fpi, cpi, rot; //fila, columna y rotación de la ficha
