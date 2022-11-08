@@ -15,6 +15,7 @@ var velocidad=50000; //velocidad del juego
               [0,-1],
               [1,-1],
               [0,-2]
+              [0,-2]
         ];
         var piezas=[  //Diseño de las piezas, el primer valor de cada fila corresponde con el número de rotaciones posibles
               [4,0,1,2,3], 
@@ -28,10 +29,10 @@ var velocidad=50000; //velocidad del juego
     //Genera una nueva partida inicializando las variables
     function nuevaPartida(){ 
                 velocidad=50000;
-                tablero=new Array(20); 
-                for (var n=0;n < 20;n++){
-                     tablero[n]=new Array(9);
-                     for (var m=0;m < 9;m++){
+                tablero=new Array(25); 
+                for (var n=0;n < 25;n++){
+                     tablero[n]=new Array(25);
+                     for (var m=0;m < 25;m++){
                           tablero[n][m]=0;
                      }
                 }
@@ -41,7 +42,7 @@ var velocidad=50000; //velocidad del juego
     //Detecta si una fila columna del tablero está libre para ser ocupada
         function cuadroNoDisponible(f,c){
         if (f < 0) return false;
-        return (c < 0 || c >= 9 || f >= 20 || tablero[f][c] > 0);
+        return (c < 0 || c >= 25 || f >= 25 || tablero[f][c] > 0);
     }
     //Detecta si la pieza activa colisiona fuera del tablero o con otra pieza
         function colisionaPieza(){
@@ -56,16 +57,16 @@ var velocidad=50000; //velocidad del juego
         }
     //Detecta si hay lineas completas y si las hay las computa y borra la linea desplazando la submatriz superior
         function detectarLineas(){
-        for (var f=0;f < 20;f++){
+        for (var f=0;f < 25;f++){
             var contarCuadros=0;
-            for (var c=0;c < 9;c++){
+            for (var c=0;c < 25;c++){
                 if (tablero[f][c]>0){
                     contarCuadros++;
                 }
             }
-            if (contarCuadros==9){
+            if (contarCuadros==25){
                 for (var f2=f;f2 > 0;f2--){
-                    for (var c2=0;c2 < 9;c2++){
+                    for (var c2=0;c2 < 25;c2++){
                         tablero[f2][c2]=tablero[f2-1][c2];
                     }
                 }
@@ -81,15 +82,15 @@ var velocidad=50000; //velocidad del juego
             for (v=1;v < 5;v++){
                 des=piezas[pieza][v];
                 var pos2=rotarCasilla(pos[des]);
-                if (pos2 [ 0 ] +fpi >= 0 && pos2 [ 0 ] +fpi < 20 &&
-                    pos2 [ 1 ] +cpi >=0 && pos2 [ 1 ] +cpi < 9){
+                if (pos2 [ 0 ] +fpi >= 0 && pos2 [ 0 ] +fpi < 25 &&
+                    pos2 [ 1 ] +cpi >=0 && pos2 [ 1 ] +cpi < 25){
                     tablero[pos2 [ 0 ] +fpi][pos2 [ 1 ] +cpi]=pieza+1;
                 }
             }
             detectarLineas();
             //Si hay algun cuadro en la fila 0 reinicia el juego
             var reiniciar=0;
-            for (var c=0;c < 9;c++){
+            for (var c=0;c < 25;c++){
                 if (tablero [ 0 ] [ c ] !=0){
                     reiniciar=1;
                 }
@@ -153,9 +154,9 @@ var velocidad=50000; //velocidad del juego
         var lt=" <";
         var des;
         var html="<table class='tetris'>"
-        for (var f=0;f < 20;f++){
+        for (var f=0;f < 25;f++){
             html+="<tr>";
-            for (var c=0;c < 9;c++){
+            for (var c=0;c < 25;c++){
                 var color=tablero[f][c];
                 if (color==0){
                     for (v=1;v < 5;v++){
