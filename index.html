@@ -6,13 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tetris</title>
     <link rel="stylesheet" href="src/style.css">
-    <script type="javascript" src="src/script.js"></script>
 </head>
-<body>
-    <body onkeydown="tecla(event)">
-        <!-- <div id='tetris'/> -->
-        <div id='tetris'></div>
-    </body>
-    <p>hola</p>
+<body onload='eventoCargar()' onkeydown="tecla(event)">
+    <div id="tetris"></div>
+    <script src="src/script.js"></script>
 </body>
 </html>
