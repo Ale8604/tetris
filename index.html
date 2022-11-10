@@ -1,17 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tetris</title>
     <link rel="stylesheet" href="src/style.css">
-    <link rel="stylesheet" type="javascript" href="src/script.js">
+    <title>tetris</title>
 </head>
 <body>
-    <body onload='eventoCargar()' onkeydown="tecla(event)">
-        <!-- <div id='tetris'/> -->
-        <div id='tetris'></div>
-    </body>
+    <div class="canvas_wrap">
+        <canvas id="tetris" width="625px" height="625px"></canvas>
+    </div>
+    <script src="src/script.js"></script>
 </body>
 </html>
