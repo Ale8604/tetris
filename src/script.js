@@ -3,6 +3,11 @@ let lastTime = 0;
 let dropInterval = 1000; //valor por defecto de caida de la ficha
 let dropCounter = 0;
 
+//siguiente pieza
+const canvasNext = document.getElementById("nextPiece");
+const contexNext = canvasNext.getContext("2d");
+contexNext.scale(19,19);
+
 //colores 
 const colors = [
                 null,
@@ -37,7 +42,13 @@ const player = {
     pos: {x:0, y:0},
     matriz: null,
     //puntaje
-    score: 0
+    score: 0,
+    //nivel
+    level: 0,
+    //lineas
+    lines: 0,
+    //pieza siguiente
+    next: null
 }
 
 
@@ -88,7 +99,7 @@ function createPiece(tipo) {
     }
 }
 
-//recorre la matriz
+//recorre la matriz y pinta la ficha
 function drawMatriz(matriz, offset) {
     matriz.forEach((row, y) => {
         row.forEach((value, x) => {
@@ -101,12 +112,31 @@ function drawMatriz(matriz, offset) {
     });
 }
 
+//Dibuja la matriz de la siguiente pieza 
+function drawMatrizNext(matriz, offset) {
+    contexNext.fillStyle = "#000";
+    contexNext.fillRect(0, 0, canvasNext.width, canvasNext.height);
+
+    //recorre la matriz y pintla la ficha
+    matriz.forEach((row, y) => {
+        row.forEach((value, x) => {
+            if(value !== 0) {
+                //color a la ficha
+                contexNext.fillStyle = colors[value];
+                contexNext.fillRect(x + offset.x, y + offset.y, 1, 1);
+            }
+        });
+    });
+}
+
 //Color del lienzo
 function draw() {
     contex.fillStyle = "#000";
     contex.fillRect(0, 0, canvas.width, canvas.height);
     drawMatriz(grid, {x:0, y:0});
     drawMatriz(player.matriz, player.pos);
+    //dibuja la matriz de la ficha siguiente
+    drawMatrizNext(player.next, {x : 1, y : 1});
 }
 //Colición
 function collide(grid, player) {
@@ -138,10 +168,28 @@ function merge(grid, player) {
 function playerReset() {
     //piezas aleatorias
     const pieces = 'ILJOTSZ';
-    player.matriz = createPiece(pieces[pieces.length * Math.random() | 0]);
+    //reduce el tiempo a medida que aumenta de niveles
+    dropInterval = 1000 - (player.level * 1000);
+    //dibuja la pieza en la matriz de siguiente y/o grande
+    if (player.next === null) {
+        player.matriz = createPiece(pieces[pieces.length * Math.random() | 0]);
+    } else {
+        player.matriz = player.next;
+    }
+    player.next = createPiece(pieces[pieces.length * Math.random() | 0]);
     //centra las piezas
     player.pos.x = (grid[0].length/2 | 0) - (player.matriz[0].length/2 | 0);
     player.pos.y = 0;
+    //Juego terminado
+    if(collide(grid, player)) {
+        grid.forEach(row => row.fill(0));//deja en ceros la matriz grande
+        //resetea todos los valores 
+        player.score = 0;
+        player.level = 0;
+        player.lines = 0;
+        updateScore();
+    }
+
 }
 
 //Borra las lineas completadas
@@ -161,18 +209,22 @@ function gridSweep() {
        
         //puntaje
         player.score += rowCount * 10;
+        //lineas
+        player.lines ++;
+        //aumenta de nivel
+        rowCount *= 2;
+        if(player.lines % 3 === 0) player.level ++;
     }
 }
-
 
 playerReset();
 
 //Actualiza el puntaje
 function updateScore(){
     document.getElementById('score').innerHTML = player.score;
+    document.getElementById('lines').innerHTML = player.lines;
+    document.getElementById('level').innerHTML = player.level;
 }
-
-
 updateScore();
 //movimiento de la ficha hacia abajo
 function playerDrop() {
