@@ -3,6 +3,19 @@ let lastTime = 0;
 let dropInterval = 1000; //valor por defecto de caida de la ficha
 let dropCounter = 0;
 
+//colores 
+const colors = [
+                null,
+                'red',
+                'blue',
+                'violet',
+                'green',
+                'purple',
+                'orange',
+                'pink'
+                ];
+
+
 const canvas = document.getElementById("tetris");
 const contex = canvas.getContext("2d");
 contex.scale(25,25); //Filas y columnas
@@ -17,10 +30,14 @@ function createMatriz(width, height) {
     return matriz;
 }
 const grid = createMatriz(25, 25);
+/* console.table(grid);
+ */
 
 const player = {
     pos: {x:0, y:0},
-    matriz: null
+    matriz: null,
+    //puntaje
+    score: 0
 }
 
 
@@ -34,49 +51,50 @@ function createPiece(tipo) {
         ];
     } else if (tipo === 'O') {
         return [
-            [1, 1],
-            [1, 1]
+            [2, 2],
+            [2, 2]
         ];        
     } else if (tipo === 'L') {
         return [
-            [0, 1, 0],
-            [0, 1, 0],
-            [0, 1, 1]
+            [0, 3, 0],
+            [0, 3, 0],
+            [0, 3, 3]
         ];  
     } else if (tipo === 'J') {
         return [
-            [0, 1, 0],
-            [0, 1, 0],
-            [1, 1, 0]
+            [0, 4, 0],
+            [0, 4, 0],
+            [4, 4, 0]
         ];  
     } else if (tipo === 'I') {
         return [
-            [0, 1, 0, 0],
-            [0, 1, 0, 0],
-            [0, 1, 0, 0],
-            [0, 1, 0, 0]
+            [0, 5, 0, 0],
+            [0, 5, 0, 0],
+            [0, 5, 0, 0],
+            [0, 5, 0, 0]
         ];  
     } else if (tipo === 'S') {
         return [
-            [0, 1, 1],
-            [1, 1, 0],
+            [0, 6, 6],
+            [6, 6, 0],
             [0, 0, 0]
         ];  
     } else if (tipo === 'Z') {
         return [
-            [1, 1, 0],
-            [0, 1, 1],
+            [7, 7, 0],
+            [0, 7, 7],
             [0, 0, 0]
         ];  
     }
 }
 
-//recorre la matrix
+//recorre la matriz
 function drawMatriz(matriz, offset) {
     matriz.forEach((row, y) => {
         row.forEach((value, x) => {
             if(value !== 0) {
-                contex.fillStyle = "red";
+                //color a la ficha
+                contex.fillStyle = colors[value];
                 contex.fillRect(x + offset.x, y + offset.y, 1, 1);
             }
         });
@@ -118,13 +136,46 @@ function merge(grid, player) {
 
 //Resetea la posición de la ficha
 function playerReset() {
-    player.matriz = createPiece("L");
-    player.pos.x = 0;
+    //piezas aleatorias
+    const pieces = 'ILJOTSZ';
+    player.matriz = createPiece(pieces[pieces.length * Math.random() | 0]);
+    //centra las piezas
+    player.pos.x = (grid[0].length/2 | 0) - (player.matriz[0].length/2 | 0);
     player.pos.y = 0;
 }
+
+//Borra las lineas completadas
+function gridSweep() {
+    let rowCount = 1;
+    outer : for (let y = grid.length - 1; y > 0; y--){
+        for (let x = 0; x < grid[y].length; x++) {
+            if(grid[y][x] === 0) {
+                continue outer;
+            }
+            
+        }
+
+        const row = grid.splice(y,1)[0].fill(0);
+        grid.unshift(row);
+        y ++;
+       
+        //puntaje
+        player.score += rowCount * 10;
+    }
+}
+
+
 playerReset();
+
+//Actualiza el puntaje
+function updateScore(){
+    document.getElementById('score').innerHTML = player.score;
+}
+
+
+updateScore();
 //movimiento de la ficha hacia abajo
-function palyerDrop() {
+function playerDrop() {
     player.pos.y ++;
     dropCounter = 0;
     //Colisión
@@ -134,6 +185,10 @@ function palyerDrop() {
         merge(grid, player);
         //Reseteamos los valores de posición de las fichas 
         playerReset();
+        //borra las lineas
+        gridSweep();
+        //actualizamos el puntaje
+        updateScore();
     }
     
 }
@@ -183,7 +238,7 @@ function update(time = 0) {
     lastTime = time;
     dropCounter += deltaTime;
     if(dropCounter > dropInterval) {
-        palyerDrop();
+        playerDrop();
     }
     draw();
     requestAnimationFrame(update);
@@ -194,7 +249,7 @@ update();
 document.addEventListener("keydown",event =>{
     //console.log(event.key);
     if(event.key === "ArrowDown") {
-        palyerDrop();
+        playerDrop();
     } else if(event.key === "ArrowLeft") {
         playerMove(-1);
     }else if (event.key === "ArrowRight") {
