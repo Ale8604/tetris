@@ -34,7 +34,7 @@ function createMatriz(width, height) {
     }
     return matriz;
 }
-const grid = createMatriz(25, 25);
+const grid = createMatriz(10, 20);
 /* console.table(grid);
  */
 
@@ -114,7 +114,7 @@ function drawMatriz(matriz, offset) {
 
 //Dibuja la matriz de la siguiente pieza 
 function drawMatrizNext(matriz, offset) {
-    contexNext.fillStyle = "#000";
+    contexNext.fillStyle = "rgb(2, 10, 25)";
     contexNext.fillRect(0, 0, canvasNext.width, canvasNext.height);
 
     //recorre la matriz y pintla la ficha

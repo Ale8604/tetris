@@ -9,11 +9,19 @@
 </head>
 <body>
     <div class="content">
-        <div id="score"></div>
-        <div id="lines"></div>
-        <div id="level"></div>
-        <canvas id="nextPiece" width="100px" height="100px"></canvas>
-        <canvas id="tetris" width="625px" height="625px"></canvas>
+        <div>
+            <canvas id="tetris" width="625px" height="625px"></canvas>  
+        </div>
+        <div class="text">
+            <div>Next Piece:</div>
+            <canvas id="nextPiece" width="100px" height="100px"></canvas> 
+            <div>Score:</div>
+            <div id="score"></div>
+            <div>Lines:</div>
+            <div id="lines"></div>
+            <div>Level:</div>
+            <div id="level"></div>
+        </div>     
     </div>
     <script src="src/script.js"></script>
 </body>
