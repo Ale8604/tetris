@@ -1,32 +1,25 @@
-.tetris{
-    border-collapse: collapse;
+
+/* canvas{
+    background-color: black;
+} */
+
+body{
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 2rem;
+    text-align: center;
+    background-color:  rgb(2, 10, 25)    ;
 }
-.tetris tr td{
-    width:40px;
-    height:40px;
-    padding: 0px;
+
+.container{
+    display: flex;
+    width: fit-content;
+    border: solid #03feff;
+    box-shadow: 2px 2px 20px 5px rgb(3, 255, 255, 0.8);
+    margin: auto;
+    margin-top: 130px;
 }
-.celda0{
-    background-color: #000000;
-}
-.celda1{
-    background-color: #0000FF;
-}
-.celda2{
-    background-color: #FF0000;
-}
-.celda3{
-    background-color: #00FF00;
-}
-.celda4{
-    background-color: #FFFF00;
-}
-.celda5{
-    background-color: #00FFFF;
-}
-.celda6{
-    background-color: #FF00FF;
-}
-.celda7{
-    background-color: #888888;
+
+.rigth{
+    width: 14rem;
 }
