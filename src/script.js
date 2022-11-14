@@ -1,203 +1,274 @@
-"use strict"
+//Variables 
+let lastTime = 0;
+let dropInterval = 1000; //valor por defecto de caida de la ficha 
+let dropCounter = 0;
 
-var velocidad=50000; //velocidad del juego
-        var fpi, cpi, rot; //fila, columna y rotación de la ficha
-        var tablero;  //matriz con el tablero
-        var pieza=0; //pieza
-    var record=0;  //almacena la mejor puntuación
-    var lineas=0;   //almacena la  puntuación actual
-        var pos=[  //Valores referencia de coordenadas relativas
-              [0,0],
-              [0,1],
-              [-1,0],
-              [1,0],
-              [-1,-1],
-              [0,-1],
-              [1,-1],
-              [0,-2]
-        ];
-        var piezas=[  //Diseño de las piezas, el primer valor de cada fila corresponde con el número de rotaciones posibles
-              [4,0,1,2,3], 
-              [4,0,1,5,6],  
-              [4,0,1,5,4],
-              [2,0,1,5,7],
-              [2,0,2,5,6],
-              [2,0,3,5,4],
-              [1,0,5,6,3]
-    ];
-    //Genera una nueva partida inicializando las variables
-    function nuevaPartida(){ 
-                velocidad=50000;
-                tablero=new Array(20); 
-                for (var n=0;n < 20;n++){
-                     tablero[n]=new Array(9);
-                     for (var m=0;m < 9;m++){
-                          tablero[n][m]=0;
-                     }
-                }
-        lineas=0;
-                nuevaPieza();
+const canvas = document.getElementById("tetris");
+const canvasNext = document.getElementById("nextPiece");
+const contex = canvas.getContext("2d");
+const contexNext = canvasNext.getContext("2d")
+
+contex.scale(25, 25); //Filas y columnas 
+contexNext.scale(19,19)
+const grid = createMatriz(25, 25);
+const color = [
+    null,
+    'red',
+    'blue',
+    'violet',
+    'green',
+    'purple',
+    'orange',
+    'pink'
+]
+const player = {
+    pos: { x: 0, y: 0 },
+    matriz: null,
+    next:null,
+    score: 0,
+    lineas: 0,
+    level: 0
+}
+
+function createPiece(tipo) {
+    if (tipo === "T") {
+        return [
+            [0, 0, 0],
+            [1, 1, 1],
+            [0, 1, 0]
+        ]
+    } else if (tipo === "O") {
+        return [
+            [2, 2],
+            [2, 2],
+        ]
+    } else if (tipo === "L") {
+        return [
+            [0, 3, 0],
+            [0, 3, 0],
+            [0, 3, 3]
+        ]
+    } else if (tipo === "J") {
+        return [
+            [0, 4, 0],
+            [0, 4, 0],
+            [4, 4, 0]
+        ]
+    } else if (tipo === "I") {
+        return [
+            [0, 5, 0, 0],
+            [0, 5, 0, 0],
+            [0, 5, 0, 0],
+            [0, 5, 0, 0]
+        ]
+    } else if (tipo === "S") {
+        return [
+            [0, 6, 6],
+            [6, 6, 0],
+            [0, 0, 0]
+        ]
+    } else if (tipo === "Z") {
+        return [
+            [7, 7, 0],
+            [0, 7, 7],
+            [0, 0, 0]
+        ]
     }
-    //Detecta si una fila columna del tablero está libre para ser ocupada
-        function cuadroNoDisponible(f,c){
-        if (f < 0) return false;
-        return (c < 0 || c >= 9 || f >= 20 || tablero[f][c] > 0);
+}
+
+
+//crea el tablero 
+function createMatriz(width, height) {
+    const matriz = [];
+    while (height--) {
+        matriz.push(new Array(width).fill(0));
     }
-    //Detecta si la pieza activa colisiona fuera del tablero o con otra pieza
-        function colisionaPieza(){
-        for (var v=1;v < 5;v++){
-            var des=piezas[pieza][v];
-            var pos2=rotarCasilla(pos[des]);
-            if (cuadroNoDisponible(pos2 [ 0 ] +fpi, pos2 [ 1 ]+cpi)){
+    return matriz;
+}
+
+
+
+//recorre la matrix 
+function drawMatriz(matriz, offset) {
+    matriz.forEach((row, y) => {
+        row.forEach((value, x) => {
+            if (value !== 0) {
+                contex.fillStyle = color[value];
+                contex.fillRect(x + offset.x, y + offset.y, 1, 1);
+            }
+        });
+    });
+}
+
+function drawMatrizNext(matriz, offset){
+    contexNext.fillStyle = "#020a19";
+    contexNext.fillRect(0,0, canvasNext.width, canvasNext.height);
+
+    matriz.forEach((row, y) => {
+        row.forEach((value, x) => {
+            if (value !== 0) {
+                contexNext.fillStyle = color[value];
+                contexNext.fillRect(x + offset.x, y + offset.y, 1, 1);
+            }
+        });
+    });
+}
+
+function colider(grid, player) {
+    const matriz = player.matriz;
+    const offset = player.pos;
+
+    for (let y = 0; y < matriz.length; y++) {
+        for (let x = 0; x < matriz[y].length; x++) {
+            if (matriz[y][x] !== 0 && (grid[y + offset.y] && grid[y + offset.y][x + offset.x]) !== 0) {
                 return true;
             }
         }
-        return false;
+    }
+    return false;
+}
+
+function merge(grid, player) {
+    player.matriz.forEach((row, y) => {
+        row.forEach((value, x) => {
+            if (value !== 0) {
+                grid[y + player.pos.y][x + player.pos.x] = value;
+            }
+        });
+    });
+}
+
+function gridSweep() {
+    let rowCount = 1;
+    outer: for (let y = grid.length - 1; y > 0; --y) {
+        for (let x = 0; x < grid[y].length; x++) {
+            if (grid[y][x] === 0) {
+                continue outer;
+
+            }
         }
-    //Detecta si hay lineas completas y si las hay las computa y borra la linea desplazando la submatriz superior
-        function detectarLineas(){
-        for (var f=0;f < 20;f++){
-            var contarCuadros=0;
-            for (var c=0;c < 9;c++){
-                if (tablero[f][c]>0){
-                    contarCuadros++;
-                }
-            }
-            if (contarCuadros==9){
-                for (var f2=f;f2 > 0;f2--){
-                    for (var c2=0;c2 < 9;c2++){
-                        tablero[f2][c2]=tablero[f2-1][c2];
-                    }
-                }
-                lineas++;
-            }
+        const row = grid.splice(y, 1)[0].fill(0);
+        grid.unshift(row);
+        y++
+
+        player.score += rowCount * 10;
+        player.lineas++;
+        rowCount *= 2;
+        if (player.lineas % 3 === 0) player.level++;
+    }
+}
+
+
+
+//Color del lienzo 
+function draw() {
+    contex.fillStyle = "#000";
+    contex.fillRect(0, 0, canvas.width, canvas.height);
+    drawMatriz(grid, { x: 0, y: 0 });
+    drawMatriz(player.matriz, player.pos);
+    drawMatrizNext(player.next, {x: 1, y:1});
+}
+
+//movimiento de la ficha hacia abajo 
+function palyerDrop() {
+    player.pos.y++;
+    if (colider(grid, player)) {
+        player.pos.y--;
+        merge(grid, player);
+        playerReset();
+        gridSweep()
+        updateScore();
+    }
+    dropCounter = 0;
+}
+
+
+function playerMove(direccion) {
+    player.pos.x += direccion;
+    if (colider(grid, player)) {
+        player.pos.x -= direccion;
+    }
+}
+
+function playerRotate() {
+    const pos = player.pos.x;
+    let offset = 1;
+    rotate(player.matriz);
+    while (colider(grid, player)) {
+        player.pos.x += offset;
+        offset = - (offset + (offset > 0 ? 1 : -1));
+        if (offset > player.matriz[0].length) {
+            rotate(player.matriz);
+            player.pos.x = pos;
+            return;
         }
     }
-    //Baja la pieza, si toca otra pieza o el suelo, saca una nueva pieza
-        function bajarPieza(){
-        fpi=fpi+1;
-        if (colisionaPieza()){
-            fpi=fpi-1;
-            for (v=1;v < 5;v++){
-                des=piezas[pieza][v];
-                var pos2=rotarCasilla(pos[des]);
-                if (pos2 [ 0 ] +fpi >= 0 && pos2 [ 0 ] +fpi < 20 &&
-                    pos2 [ 1 ] +cpi >=0 && pos2 [ 1 ] +cpi < 9){
-                    tablero[pos2 [ 0 ] +fpi][pos2 [ 1 ] +cpi]=pieza+1;
-                }
-            }
-            detectarLineas();
-            //Si hay algun cuadro en la fila 0 reinicia el juego
-            var reiniciar=0;
-            for (var c=0;c < 9;c++){
-                if (tablero [ 0 ] [ c ] !=0){
-                    reiniciar=1;
-                }
-            }
-            if (reiniciar==1){
-                if (lineas > record){
-                    record=lineas;
-                }
-                nuevaPartida();
-            }else{
-                nuevaPieza();
-            }
-        }
-        }
-    //Mueve la pieza lateralmente
-    function moverPieza(des){
-        cpi=cpi+des;
-        if (colisionaPieza()){
-            cpi=cpi-des;
+
+}
+
+function rotate(matriz) {
+    for (let y = 0; y < matriz.length; y++) {
+        for (let x = 0; x < y; x++) {
+            [matriz[x][y], matriz[y][x]] = [matriz[y][x], matriz[x][y]];
         }
     }
-    //Rota la pieza según el número de rotaciones posibles tenga la pieza activa. (posición 0 de la pieza)
-    function rotarPieza(){
-                rot=rot+1;
-                if (rot==piezas[pieza] [ 0 ] ){
-            rot=0;
-        }
-        if (colisionaPieza()){
-            rot=rot-1;
-                    if (rot==-1){
-                rot=piezas[pieza] [ 0 ] -1;
-            }
-        }
+
+    matriz.forEach(row => row.reverse());
+}
+
+function playerReset() {
+    const pieces = 'ILJOTSZ'
+    dropInterval = 1000 - (player.level*100);
+    //dibuja la pieza en la matriz de siguiente y/o grande
+    if (player.next === null) {
+        player.matriz = createPiece(pieces[pieces.length * Math.random() | 0]);
+    } else {
+        player.matriz = player.next;
     }
-    //Obtiene unas coordenadas f,c y las rota 90 grados
-    function rotarCasilla(celda){
-        var pos2=[celda [ 0 ] , celda [ 1 ] ];
-        for (var n=0;n < rot ;n++){
-            var f=pos2 [ 1 ]; 
-            var c=-pos2 [ 0 ] ;
-            pos2 [ 0 ] =f;
-            pos2 [ 1 ] =c;
-        }
-        return pos2;
+    player.next = createPiece(pieces[pieces.length * Math.random() | 0]);
+    player.pos.x = (grid[0].length / 2 | 0) - (player.matriz[0].length / 2 | 0);
+    player.pos.y = 0;
+    if(colider (grid, player)){
+        grid.forEach(row => row.fill(0));
+        player.score = 0;
+        player.level = 0;
+        player.lineas = 0;
+        updateScore();
     }
-    //Genera una nueva pieza aleatoriamente
-    function nuevaPieza(){
-        cpi=3;
-        fpi=0;
-        rot=0;
-        pieza=Math.floor(Math.random()*7);
-        }
-    //Ejecución principal del juego, realiza la animación y repinta
-        function tick(){
-        bajarPieza();
-        pintar();
-        setTimeout('tick()', velocidad/100);
-        }
-    //Pinta el tablero (lo genera con html) y lo plasma en un div.
-    function pintar(){
-        var lt=" <";
-        var des;
-        var html="<table class='tetris'>"
-        for (var f=0;f < 20;f++){
-            html+="<tr>";
-            for (var c=0;c < 9;c++){
-                var color=tablero[f][c];
-                if (color==0){
-                    for (v=1;v < 5;v++){
-                        des=piezas[pieza][v];
-                        var pos2=rotarCasilla(pos[des]);
-                        if (f==fpi+pos2 [ 0 ]   && c==cpi+pos2 [ 1 ] ){
-                            color=pieza+1;
-                        }
-                    }
-                }
-                html+="<td class='celda" + color + "'/>";
-                    }
-            html+=lt+"/tr>";
-                }
-        html+=lt+"/table>";
-        html+="<br />Lineas : " + lineas;
-        html+="<br />Record : " + record;
-        document.getElementById('tetris').innerHTML=html;
-                velocidad=Math.max(velocidad-1,500);
-        
+
+}
+
+//Añade el vento de tecla abajo 
+document.addEventListener("keydown", event => {
+    console.log(event.key);
+    if (event.key === "ArrowDown") {
+        palyerDrop();
+    } else if (event.key === "ArrowLeft") {
+        playerMove(-1);
+    } else if (event.key === "ArrowRight") {
+        playerMove(1);
+    } else if (event.key === "ArrowUp") {
+        playerRotate();
     }
-    //Al iniciar la pagina inicia el juego
-        function eventoCargar(){
-                nuevaPartida();
-                setTimeout('tick()', 1);
-        }
-    //Al pulsar una tecla
-        function tecla(e){
-                var characterCode = (e && e.which)? e.which: e.keyCode;
-                switch (characterCode){
-        case 37:
-                        moverPieza(-1);
-            break;
-        case 38:
-            rotarPieza();
-            break;
-        case 39:
-                        moverPieza(1);
-            break;
-        case 40:
-            bajarPieza();
-            break;
-                }
-        pintar();
-        }
+});
+
+function updateScore() {
+    document.getElementById("score").innerHTML = player.score;
+    document.getElementById("lineas").innerHTML = player.lineas;
+    document.getElementById("level").innerHTML = player.level;
+}
+
+//Establece el temporizador 
+function update(time = 0) {
+    const deltaTime = time - lastTime;
+    lastTime = time;
+    dropCounter += deltaTime;
+    if (dropCounter > dropInterval) {
+        palyerDrop();
+    }
+    draw();
+    requestAnimationFrame(update);
+}
+
+playerReset()
+update();
