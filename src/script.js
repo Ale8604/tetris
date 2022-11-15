@@ -2,6 +2,7 @@
 let lastTime = 0;
 let dropInterval = 1000; //valor por defecto de caida de la ficha
 let dropCounter = 0;
+let pause = true; //pausa al juego
 
 //siguiente pieza
 const canvasNext = document.getElementById("nextPiece");
@@ -34,7 +35,7 @@ function createMatriz(width, height) {
     }
     return matriz;
 }
-const grid = createMatriz(10, 20);
+const grid = createMatriz(25, 25);
 /* console.table(grid);
  */
 
@@ -54,48 +55,49 @@ const player = {
 
 //crea las piezas 
 function createPiece(tipo) {
-    if(tipo === 'T') {
-        return [
-            [0, 0, 0],
-            [1, 1, 1],
-            [0, 1, 0]
-        ];
-    } else if (tipo === 'O') {
-        return [
-            [2, 2],
-            [2, 2]
-        ];        
-    } else if (tipo === 'L') {
-        return [
-            [0, 3, 0],
-            [0, 3, 0],
-            [0, 3, 3]
-        ];  
-    } else if (tipo === 'J') {
-        return [
-            [0, 4, 0],
-            [0, 4, 0],
-            [4, 4, 0]
-        ];  
-    } else if (tipo === 'I') {
-        return [
-            [0, 5, 0, 0],
-            [0, 5, 0, 0],
-            [0, 5, 0, 0],
-            [0, 5, 0, 0]
-        ];  
-    } else if (tipo === 'S') {
-        return [
-            [0, 6, 6],
-            [6, 6, 0],
-            [0, 0, 0]
-        ];  
-    } else if (tipo === 'Z') {
-        return [
-            [7, 7, 0],
-            [0, 7, 7],
-            [0, 0, 0]
-        ];  
+    switch (tipo) {
+        case 'T':
+            return [
+                [0, 0, 0],
+                [1, 1, 1],
+                [0, 1, 0]
+            ];
+        case 'O':
+            return [
+                [2, 2],
+                [2, 2]
+            ]; 
+        case 'L':
+            return [
+                [0, 3, 0],
+                [0, 3, 0],
+                [0, 3, 3]
+            ];
+        case 'J':
+            return [
+                [0, 4, 0],
+                [0, 4, 0],
+                [4, 4, 0]
+            ];  
+        case 'I':
+            return [
+                [0, 5, 0, 0],
+                [0, 5, 0, 0],
+                [0, 5, 0, 0],
+                [0, 5, 0, 0]
+            ]; 
+        case 'S':
+            return [
+                [0, 6, 6],
+                [6, 6, 0],
+                [0, 0, 0]
+            ]; 
+        case 'Z':
+            return [
+                [7, 7, 0],
+                [0, 7, 7],
+                [0, 0, 0]
+            ];
     }
 }
 
@@ -286,30 +288,66 @@ function playerRotate() {
 
 //Establece el temporizador
 function update(time = 0) {
-    const deltaTime = time - lastTime;
-    lastTime = time;
-    dropCounter += deltaTime;
-    if(dropCounter > dropInterval) {
-        playerDrop();
+    //solo si el juego no está pausado
+    if(!pause) {
+        const deltaTime = time - lastTime;
+        lastTime = time;
+        dropCounter += deltaTime;
+        if(dropCounter > dropInterval) {
+            playerDrop();
+        }
+        draw();
+        requestAnimationFrame(update);
     }
-    draw();
-    requestAnimationFrame(update);
 }
 update();
 
 //Añade el vento de las teclas
 document.addEventListener("keydown",event =>{
-    //console.log(event.key);
-    if(event.key === "ArrowDown") {
-        playerDrop();
-    } else if(event.key === "ArrowLeft") {
-        playerMove(-1);
-    }else if (event.key === "ArrowRight") {
-        playerMove(1);
-    } else if (event.key === "ArrowUp") {
-        playerRotate();
-    }
+    switch (event.key) {
+        case "ArrowDown":
+            playerDrop();
+            break;
+        case "ArrowLeft":
+            playerMove(-1);
+            break;
+        case "ArrowRight":
+            playerMove(1);
+            break;
+        case "ArrowUp":
+            playerRotate();
+            break;
+    };
 });
 
+//Pausa el juego
+function pausar() {
+    if(pause) {
+        pause = false;
+        //quita la pausa al juego
+        update();
+    } else {
+        pause = true;
+    }
+}
 
+window.onload = function() {
+    //muestra la modal
+    var modal = document.getElementById("myModal");
+    modal.style.display = 'block';
+    modal.classList.add('show');
+    modal.setAttribute("role", "dialog");
+    var play = document.getElementById("btn-play");
+    //Pone el fondo oscuro
+    var body = document.getElementById("body");
+    body.insertAdjacentHTML('afterend', '<div class="modal-backdrop"></div>');
 
+    //cierra la modal
+    play.addEventListener('click', () => {
+        modal.style.display = 'none';
+        document.querySelector('div.modal-backdrop').remove();
+        //quita el pause al juego
+        pausar();
+    });
+
+}

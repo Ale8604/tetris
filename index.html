@@ -4,10 +4,15 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- estilos propios -->
     <link rel="stylesheet" href="src/style.css">
+
     <title>tetris</title>
 </head>
-<body>
+<body id="body">
     <div class="content">
         <div>
             <canvas id="tetris" width="625px" height="625px"></canvas>  
@@ -21,8 +26,35 @@
             <div id="lines"></div>
             <div>Level:</div>
             <div id="level"></div>
+            <br>
+            <button onclick="pausar()" class="btn btn-play btn-lg">Pause</button>
         </div>     
     </div>
+    
+    <!-- The Modal -->
+    <div class="modal" id="myModal">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+    
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h1>Welcome Tetris</h1>
+          </div>
+    
+          <!-- Modal body -->
+          <div class="modal-body">
+            Modal body..
+          </div>
+    
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button type="button" id="btn-play" class="btn btn-play btn-lg">Play Tetris</button>
+          </div>
+    
+        </div>
+      </div>
+    </div>
+    <!-- <div class="modal-backdrop"></div> -->
     <script src="src/script.js"></script>
 </body>
 </html>
