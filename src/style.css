@@ -33,6 +33,7 @@ body {
 .modal-footer {
     justify-content: center;
 }
+
 .btn-play {
     cursor: pointer;
     background-color: #03feff;

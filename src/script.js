@@ -165,6 +165,58 @@ function merge(grid, player) {
         });
     });
 }
+//Funcion para mostrar la modal y poner el fondo oscuro
+function showModal(id) {
+    //muestra la modal
+    var modal = document.getElementById(id);
+    modal.style.display = 'block';
+    modal.classList.add('show');
+    modal.setAttribute("role", "dialog");
+    //Pone el fondo oscuro
+    var body = document.getElementById("body");
+    body.insertAdjacentHTML('afterend', '<div class="modal-backdrop"></div>');
+    //retornamos la variable modal
+    return modal;
+}
+
+//Da play al juego
+function playGame(id, modal){
+    //selecciona el elemento por su id
+    var play = document.getElementById(id);
+    play.addEventListener('click', () => {
+        //quita el modal
+        modal.style.display = 'none';
+        //quita el fondo oscuro
+        document.querySelector('div.modal-backdrop').remove();
+        //quita el pause al juego
+        pausar();
+        //solo para el botón de jugar de nuevo
+        if(id == "btn-again-yes") {
+            //deja en ceros la matriz grande
+            grid.forEach(row => row.fill(0));
+            //resetea el valor del puntaje
+            player.score = 0;
+            //resetea el valor del nivel
+            player.level = 0;
+            //resetea el valor de la lineas
+            player.lines = 0;
+
+            updateScore();
+        } 
+    });
+
+}
+//función para salir del juego 
+function exitGame(id){
+    pausar();
+    //selecciona el elemento por su id
+    var play = document.getElementById(id);
+    //le añadimos el evento click
+    play.addEventListener('click', () => {
+        //recargamos la página
+        window.location.reload();
+    });
+}
 
 //Resetea la posición de la ficha
 function playerReset() {
@@ -184,12 +236,13 @@ function playerReset() {
     player.pos.y = 0;
     //Juego terminado
     if(collide(grid, player)) {
-        grid.forEach(row => row.fill(0));//deja en ceros la matriz grande
-        //resetea todos los valores 
-        player.score = 0;
-        player.level = 0;
-        player.lines = 0;
-        updateScore();
+        //mostramos la ventana modal
+        var modal = showModal("myModal2");
+        //añadimos el evento click al botón jugar de nuevo
+        playGame("btn-again-yes",modal );
+        //añadimos el evento click al botón no jugar de nuevo
+        exitGame("btn-again-no");
+
     }
 
 }
@@ -221,13 +274,18 @@ function gridSweep() {
 
 playerReset();
 
-//Actualiza el puntaje
+//Función que muestra los valores de puntaje, lineas y nivel
 function updateScore(){
+    //Escribe el valor de puntaje en el elemento html con id="score"
     document.getElementById('score').innerHTML = player.score;
+    //Escribe el valor de lineas en el elemento html con id="lines"
     document.getElementById('lines').innerHTML = player.lines;
+    //Escribe el valor del nivel en el elemento html con id="level"
     document.getElementById('level').innerHTML = player.level;
 }
+//Ejecuta la función updateScore()
 updateScore();
+
 //movimiento de la ficha hacia abajo
 function playerDrop() {
     player.pos.y ++;
@@ -241,7 +299,7 @@ function playerDrop() {
         playerReset();
         //borra las lineas
         gridSweep();
-        //actualizamos el puntaje
+        //actualizamos los valores en la vista (html)
         updateScore();
     }
     
@@ -288,7 +346,7 @@ function playerRotate() {
 
 //Establece el temporizador
 function update(time = 0) {
-    //solo si el juego no está pausado
+    //se ejecuta solo si el juego no está pausado
     if(!pause) {
         const deltaTime = time - lastTime;
         lastTime = time;
@@ -300,54 +358,64 @@ function update(time = 0) {
         requestAnimationFrame(update);
     }
 }
+//Ejecutamos la función update()
 update();
 
-//Añade el vento de las teclas
+//Función que añade el evento keydown a las teclas
 document.addEventListener("keydown",event =>{
+    //Mecanismo de control que determina las funciones a ejecutar segun la llave de
+    //la tecla que disparó el evento 
     switch (event.key) {
+        //Si la tecla es fecha abajo
         case "ArrowDown":
+            //Ejecutamos la función playerDrop() para hacer que la ficha baje más rápido
             playerDrop();
+            //finaliza la ejecución de la función
             break;
+        //Si la tecla es fecha izquierda
         case "ArrowLeft":
+            //Ejecutamos la función playerMove(-1) para hacer que la ficha
+            //se mueva una posición a la izquierda
             playerMove(-1);
+            //finaliza la ejecución de la función
             break;
+        //Si la tecla es fecha derecha
         case "ArrowRight":
+            //Ejecutamos la función playerMove(1) para hacer que la ficha
+            //se mueva una posición a la derecha
             playerMove(1);
+            //finaliza la ejecución de la función
             break;
+        //Si la tecla es fecha arriba
         case "ArrowUp":
+            //Ejecutamos la función playerRotate() para hacer que la ficha rote
             playerRotate();
+            //finaliza la ejecución de la función
             break;
     };
 });
 
 //Pausa el juego
 function pausar() {
+    //Si la variable pause es verdadera
     if(pause) {
+        //cambia el valor de la variable pause a falso
         pause = false;
-        //quita la pausa al juego
+        //Restablece el movimiento de la ficha y el temporizador
         update();
+    //Si la variable pause es falsa
     } else {
+        //cambia el valor de la variable pause a verdadero
         pause = true;
     }
 }
 
+//Función que se ejecuta al cargar completamente la página
 window.onload = function() {
-    //muestra la modal
-    var modal = document.getElementById("myModal");
-    modal.style.display = 'block';
-    modal.classList.add('show');
-    modal.setAttribute("role", "dialog");
-    var play = document.getElementById("btn-play");
-    //Pone el fondo oscuro
-    var body = document.getElementById("body");
-    body.insertAdjacentHTML('afterend', '<div class="modal-backdrop"></div>');
-
-    //cierra la modal
-    play.addEventListener('click', () => {
-        modal.style.display = 'none';
-        document.querySelector('div.modal-backdrop').remove();
-        //quita el pause al juego
-        pausar();
-    });
-
+    //Muestra la modal el mesanje de bienvenida con las instrucciones para jugar
+    var modal = showModal("myModal");
+    //Añadimos el evento click al boton con el id="btn-play" para ocultar el mensaje
+    //de bienvenida (modal) e iniciar el juego
+    playGame("btn-play",modal);
 }
+
