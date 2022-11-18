@@ -4,6 +4,7 @@ let dropInterval = 1000; //valor por defecto de caida de la ficha
 let dropCounter = 0;
 let pause = true; //pausa al juego
 
+
 //siguiente pieza
 const canvasNext = document.getElementById("nextPiece");
 const contexNext = canvasNext.getContext("2d");
@@ -12,13 +13,13 @@ contexNext.scale(19,19);
 //colores 
 const colors = [
                 null,
-                'red',
-                'blue',
-                'violet',
-                'green',
-                'purple',
+                '#9f00ef',
+                'yellow',
                 'orange',
-                'pink'
+                'blue',
+                '#00edef',
+                'green',
+                'red'
                 ];
 
 
@@ -325,21 +326,22 @@ function playerDrop() {
     
 }
 
-//movimiento ficha hacia la izquierda
-function playerMoveLeft() {
-    player.pos.x += -1;
-    //colisión
-    if(collide(grid, player)) {
-        player.pos.x -= -1;
-    }
-}
-//movimiento ficha hacia la derecha
-function playerMoveRight() {
-    player.pos.x += 1;
-    //colisión
-    if(collide(grid, player)) {
-        player.pos.x -= 1;
-    }
+//movimiento ficha hacia la derecha/izquierda
+//movimiento ficha hacia la izquierda 
+function playerMoveLeft() { 
+    player.pos.x += -1; 
+    //colisión 
+    if(collide(grid, player)) { 
+        player.pos.x -= -1; 
+    } 
+} 
+//movimiento ficha hacia la derecha 
+function playerMoveRight() { 
+    player.pos.x += 1; 
+    //colisión 
+    if(collide(grid, player)) { 
+        player.pos.x -= 1; 
+    } 
 }
 
 //Rotación
@@ -431,20 +433,18 @@ function pausar() {
         pause = false;
         //Restablece el movimiento de la ficha y el temporizador
         update();
-
-        document.getElementById("ArrowDown").addEventListener('click',playerDrop );
-        document.getElementById("ArrowLeft").addEventListener('click',playerMoveLeft);
-        document.getElementById("ArrowRight").addEventListener('click',playerMoveRight);
-        document.getElementById("ArrowUp").addEventListener('click',playerRotate );
+        document.getElementById("down").addEventListener('click',playerDrop ); 
+        document.getElementById("left").addEventListener('click',playerMoveLeft); 
+        document.getElementById("right").addEventListener('click',playerMoveRight); 
+        document.getElementById("up").addEventListener('click', playerRotate );
     //Si la variable pause es falsa
     } else {
         //cambia el valor de la variable pause a verdadero
         pause = true;
-
-        document.getElementById("ArrowDown").removeEventListener('click',playerDrop );
-        document.getElementById("ArrowLeft").removeEventListener('click',playerMoveLeft);
-        document.getElementById("ArrowRight").removeEventListener('click',playerMoveRight );
-        document.getElementById("ArrowUp").removeEventListener('click',playerRotate );
+        document.getElementById("down").removeEventListener('click', playerDrop ); 
+        document.getElementById("left").removeEventListener('click',playerMoveLeft); 
+        document.getElementById("right").removeEventListener('click',playerMoveRight ); 
+        document.getElementById("up").removeEventListener('click', playerRotate );
     }
 }
 

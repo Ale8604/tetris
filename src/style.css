@@ -10,6 +10,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
 }
 
 .content {
@@ -121,10 +122,24 @@ body {
 }
 .btn-pla2:hover{
     transition: 0.30s;
-    background-color: #08acac;
+    background-color: #1f1f1f;
     
 }
-/*  #tetris {
-    width: 625px;
-    height: 625px;
- } */
+
+.botones button:hover{
+    transition: 0.30s;
+    background-color: #08acac;
+}
+
+.botones button{
+    border-radius: 20px;
+    margin-left: 20px;
+    padding: 10px 20px;
+    border: solid #03feff 4px;
+    box-shadow: 0 0 54px #03feff, 0 0 14px #03feff;
+    color: white;
+    background-color: rgb(34, 34, 34);
+    text-shadow: 0 0 14px #03feff, 0 0 24px #03feff;
+}
+
+
