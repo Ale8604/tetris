@@ -55,14 +55,7 @@ body {
     
 }
 
-.btn-play{
-    padding: 10px 90px;
-    font-weight: 700;
-    text-transform: uppercase;
-    margin-bottom: 40px;
-    
-    
-}
+
 .btn-play {
     cursor: pointer;
     background-color: 0 3px 5px 5px #03feff;
@@ -143,3 +136,45 @@ body {
 }
 
 
+.botones {
+    display:flex ;
+    margin: auto;
+}
+
+.modal-backdrop{
+    width: 100%;
+    height: 100%;
+}
+
+@media (min-width: 768px) {
+    .btn-play{
+        padding: 10px 90px;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-bottom: 40px;
+        font-size: 1.25rem;
+        border-radius: 0.5rem;
+        
+    }
+}
+
+@media (max-width: 767px) and (min-width: 481px) {
+
+}
+@media (max-width: 480px) {
+    .text {
+        font-size: 0.875rem;
+    }
+    .btn-play{
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        border-radius: 0.25rem;
+    }
+    .content {
+        height: 410px;
+        margin: auto auto 0 auto;
+    }
+    .botones {
+        font-size: 1rem;
+    }
+}
