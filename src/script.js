@@ -31,17 +31,17 @@ var columns = 20;
 const contex = canvas.getContext("2d");
 
 
-if(screen.width >=1024){
+if(screen.height >= 992){
 //tamaño al canvas
 canvas.width = 400;
 canvas.height = 800;
 contex.scale(40, 40); //Filas y columnas
-} else if (screen.width >=768 && screen.width <1024){
+} else if (screen.height >=650 && screen.height <992){
   //tamaño al canvas
     canvas.width = 300;
     canvas.height = 600;
     contex.scale(30, 30); //Filas y columnas  
-} else if (screen.width <768) {
+} else if (screen.height <650) {
       //tamaño al canvas
       canvas.width = 200;
       canvas.height = 400;
