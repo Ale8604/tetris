@@ -146,9 +146,9 @@ body {
     height: 100%;
 }
 
-@media (min-width: 768px) {
+@media (min-height: 992px) {
     .btn-play{
-        padding: 10px 90px;
+        padding: 10px;
         font-weight: 700;
         text-transform: uppercase;
         margin-bottom: 40px;
@@ -158,14 +158,25 @@ body {
     }
 }
 
-@media (max-width: 767px) and (min-width: 481px) {
-
+@media (min-height: 650px) and (max-height: 991px) {
+    .btn-play {
+        padding: 10px;
+    }
+    .content {
+        height: 610px;
+        margin: auto auto 2% auto;
+    }
+    .text {
+        font-size: 1.25rem;
+    }
 }
-@media (max-width: 480px) {
+@media (max-height: 649px) {
     .text {
         font-size: 0.875rem;
     }
-    .btn-play{
+    .btn-play,
+    .btn-pla2
+    {
         padding: 0.25rem 0.5rem;
         font-size: 0.875rem;
         border-radius: 0.25rem;
@@ -177,5 +188,14 @@ body {
     .botones {
         font-size: 1rem;
         margin: 2% auto auto auto;
+    }
+    .cont-canvas {
+        height: auto;
+    }
+    .modal-body {
+        font-size: 1rem;
+    }
+    body {
+        height: auto;
     }
 }
