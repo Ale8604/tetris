@@ -19,7 +19,7 @@ body {
     margin: auto;
     color: white;
     display: flex;
-    height: 633px;
+    height: 810px;
 }
 
 .text {
@@ -124,3 +124,7 @@ body {
     background-color: #08acac;
     
 }
+/*  #tetris {
+    width: 625px;
+    height: 625px;
+ } */

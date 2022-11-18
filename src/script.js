@@ -23,8 +23,29 @@ const colors = [
 
 
 const canvas = document.getElementById("tetris");
+
+//filas y clumnas
+var rows = 10;
+var columns = 20;
 const contex = canvas.getContext("2d");
-contex.scale(25,25); //Filas y columnas
+
+
+if(screen.width >=1024){
+//tamaño al canvas
+canvas.width = 400;
+canvas.height = 800;
+contex.scale(40, 40); //Filas y columnas
+} else if (screen.width >=768 && screen.width <1024){
+  //tamaño al canvas
+    canvas.width = 300;
+    canvas.height = 600;
+    contex.scale(30, 30); //Filas y columnas  
+} else if (screen.width <768) {
+      //tamaño al canvas
+      canvas.width = 200;
+      canvas.height = 400;
+      contex.scale(20, 20); //Filas y columnas 
+}
 
 
 //crea el tablero
@@ -35,7 +56,7 @@ function createMatriz(width, height) {
     }
     return matriz;
 }
-const grid = createMatriz(25, 25);
+const grid = createMatriz(rows, columns);
 /* console.table(grid);
  */
 
@@ -223,7 +244,7 @@ function playerReset() {
     //piezas aleatorias
     const pieces = 'ILJOTSZ';
     //reduce el tiempo a medida que aumenta de niveles
-    dropInterval = 1000 - (player.level * 1000);
+    dropInterval = 1000 - (player.level * 50);
     //dibuja la pieza en la matriz de siguiente y/o grande
     if (player.next === null) {
         player.matriz = createPiece(pieces[pieces.length * Math.random() | 0]);
@@ -242,7 +263,6 @@ function playerReset() {
         playGame("btn-again-yes",modal );
         //añadimos el evento click al botón no jugar de nuevo
         exitGame("btn-again-no");
-
     }
 
 }
@@ -305,12 +325,20 @@ function playerDrop() {
     
 }
 
-//movimiento ficha hacia la derecha/izquierda
-function playerMove(direction) {
-    player.pos.x += direction;
+//movimiento ficha hacia la izquierda
+function playerMoveLeft() {
+    player.pos.x += -1;
     //colisión
     if(collide(grid, player)) {
-        player.pos.x -= direction;
+        player.pos.x -= -1;
+    }
+}
+//movimiento ficha hacia la derecha
+function playerMoveRight() {
+    player.pos.x += 1;
+    //colisión
+    if(collide(grid, player)) {
+        player.pos.x -= 1;
     }
 }
 
@@ -376,14 +404,14 @@ document.addEventListener("keydown",event =>{
         case "ArrowLeft":
             //Ejecutamos la función playerMove(-1) para hacer que la ficha
             //se mueva una posición a la izquierda
-            playerMove(-1);
+            playerMoveLeft();
             //finaliza la ejecución de la función
             break;
         //Si la tecla es fecha derecha
         case "ArrowRight":
             //Ejecutamos la función playerMove(1) para hacer que la ficha
             //se mueva una posición a la derecha
-            playerMove(1);
+            playerMoveRight();
             //finaliza la ejecución de la función
             break;
         //Si la tecla es fecha arriba
@@ -403,10 +431,20 @@ function pausar() {
         pause = false;
         //Restablece el movimiento de la ficha y el temporizador
         update();
+
+        document.getElementById("ArrowDown").addEventListener('click',playerDrop );
+        document.getElementById("ArrowLeft").addEventListener('click',playerMoveLeft);
+        document.getElementById("ArrowRight").addEventListener('click',playerMoveRight);
+        document.getElementById("ArrowUp").addEventListener('click',playerRotate );
     //Si la variable pause es falsa
     } else {
         //cambia el valor de la variable pause a verdadero
         pause = true;
+
+        document.getElementById("ArrowDown").removeEventListener('click',playerDrop );
+        document.getElementById("ArrowLeft").removeEventListener('click',playerMoveLeft);
+        document.getElementById("ArrowRight").removeEventListener('click',playerMoveRight );
+        document.getElementById("ArrowUp").removeEventListener('click',playerRotate );
     }
 }
 
@@ -419,3 +457,7 @@ window.onload = function() {
     playGame("btn-play",modal);
 }
 
+
+
+
+     
