@@ -386,14 +386,14 @@ document.addEventListener("keydown",event =>{
         case "ArrowLeft":
             //Ejecutamos la función playerMove(-1) para hacer que la ficha
             //se mueva una posición a la izquierda
-            playerMove(-1);
+            playerMoveLeft(-1);
             //finaliza la ejecución de la función
             break;
         //Si la tecla es fecha derecha
         case "ArrowRight":
             //Ejecutamos la función playerMove(1) para hacer que la ficha
             //se mueva una posición a la derecha
-            playerMove(1);
+            playerMoveRight(1);
             //finaliza la ejecución de la función
             break;
         //Si la tecla es fecha arriba
