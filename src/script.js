@@ -32,16 +32,16 @@ const contex = canvas.getContext("2d");
 
 
 if(screen.height >= 992){
-//tamaño al canvas
-canvas.width = 400;
-canvas.height = 800;
-contex.scale(40, 40); //Filas y columnas
+    //tamaño al canvas
+    canvas.width = 400;
+    canvas.height = 800;
+    contex.scale(40, 40); //Filas y columnas
 } else if (screen.height >=650 && screen.height <992){
   //tamaño al canvas
     canvas.width = 300;
     canvas.height = 600;
     contex.scale(30, 30); //Filas y columnas  
-} else if (screen.height <650) {
+} else {
       //tamaño al canvas
       canvas.width = 200;
       canvas.height = 400;
@@ -326,7 +326,6 @@ function playerDrop() {
     
 }
 
-//movimiento ficha hacia la derecha/izquierda
 //movimiento ficha hacia la izquierda 
 function playerMoveLeft() { 
     player.pos.x += -1; 

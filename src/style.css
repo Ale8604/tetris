@@ -169,10 +169,12 @@ body {
     .text {
         font-size: 1.25rem;
     }
+
 }
 @media (max-height: 649px) {
     .text {
         font-size: 0.875rem;
+        margin: auto;
     }
     .btn-play,
     .btn-pla2
@@ -189,13 +191,14 @@ body {
         font-size: 1rem;
         margin: 2% auto auto auto;
     }
+    .botones button {
+        margin: 1%;
+    }
     .cont-canvas {
         height: auto;
     }
     .modal-body {
         font-size: 1rem;
     }
-    body {
-        height: auto;
-    }
+
 }
