@@ -3,7 +3,8 @@ let lastTime = 0; //guarda el tiempo anterior
 let dropInterval = 1000; //intervalo por defecto de caida de la ficha
 let dropCounter = 0;//cuenta el intervalo de tiempo transcurrido
 let pause = true; //pausa al juego
-//Array de string que guarda los colores
+//colores 
+/* array of colors that will be used to paint each piece of the set */
 const colors = [
     null,
     '#9f00ef',
@@ -32,8 +33,10 @@ const player = {
 }
 // --------------------------Canvas Pieza Siguiente---------------------------- 
 //siguiente pieza
+/* creation of the canvas where the next piece will be placed */
 const canvasNext = document.getElementById("nextPiece");
 const contexNext = canvasNext.getContext("2d");
+/*canvas size*/
 contexNext.scale(19,19);
 
 // -----------------------------Canvas Tetris --------------------------------- 
@@ -80,6 +83,7 @@ const grid = createMatriz(rows, columns);
 // -------------------------------- Piezas ------------------------------------
 
 //crea las piezas 
+/*function that will be called to create a part that will be invoked depending on which letter is displayed*/
 function createPiece(tipo) {
     //Evaliamos si el argumento *tipo* cumple con lagunos de los casos
     switch (tipo) {
@@ -142,9 +146,10 @@ function createPiece(tipo) {
     }
 }
 
-//Dibuja las fichas del tetris
+/* this function scrolls through the card and any non-zero number that it finds "Y" or "X" 
+   it will paint it with the color that it gets from the COLORS array.*/
 function drawMatriz(matriz, offset) {
-    //recorremos las filas de nuestra ficha (matriz) y ejecutamos una función anonima que tiene por parámetro la fila y la posición dentro de la fila
+    /* loops that traverse the main matrix by rows and columns to search for a value other than "0" in order to paint it with the corresponding color */    
     matriz.forEach((row, y) => {
         //recorremos nuestra filas y ejecutamos una función anonima que tiene por parámetros el valor del elemento(cuadrito) y su posición
         row.forEach((value, x) => {
@@ -161,17 +166,19 @@ function drawMatriz(matriz, offset) {
 
 //Dibuja la matriz de la siguiente pieza y la pieza siguiente
 function drawMatrizNext(matriz, offset) {
-    //Crea un rectangulo del tamaño de la matriz de la pieza siguiente y lo rellena del color "rgb(2, 10, 25)"
+    /* initial color of the canvas  */
     contexNext.fillStyle = "rgb(2, 10, 25)";
+    /* position from which position to which position the canvas is to be painted */
     contexNext.fillRect(0, 0, canvasNext.width, canvasNext.height);
 
-    //recorre las filas de la matriz de la ficha siguiente
+    /* loops that traverse the main matrix by rows and columns to search for a value other than "0" in order to paint it with the corresponding color */
     matriz.forEach((row, y) => {
         //recorre los elementos de cada fila
         row.forEach((value, x) => {
             //si el valor del elemento es diferente de cero
             if(value !== 0) {
-                //se determina el color según su valor y el array de colores (1,2,3,4,5,6,7)
+                /* scrolls through the card and any non-zero number that is found "Y" or "X"
+                will be painted with the color it gets from the COLORS array.*/
                 contexNext.fillStyle = colors[value];
                 //Rellena el rectagunlo del color
                 contexNext.fillRect(x + offset.x, y + offset.y, 1, 1);
@@ -182,12 +189,14 @@ function drawMatrizNext(matriz, offset) {
 
 //Funcion que dibuja el tetris(canvas) y la matriz de la ficha siguiente
 function draw() {
-    //Establece el color del tetris(canvas)
+    /* It is saying from where to where the canvas will
+    be painted both in height and width.  */
     contex.fillStyle = "#000";
     //Crea un rectangulo del tamaño del tetris(canvas) y lo rellena de color #000
     contex.fillRect(0, 0, canvas.width, canvas.height);
-    //Ejecutamos la función drawMatriz y le pasamos la ficha(matriz) a dibujar y su posición
+    /* call to the function that as a parameter is passed the matrix and the initial position where the part will be painted */
     drawMatriz(grid, {x:0, y:0});
+    /* calls the function again in order to mark the piece on the board and make it visible to the user */
     drawMatriz(player.matriz, player.pos);
     //dibuja la matriz de la ficha siguiente
     drawMatrizNext(player.next, {x : 1, y : 1});
