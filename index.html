@@ -13,12 +13,16 @@
     <link rel="stylesheet" href="src/style.css">
 </head>
 <body id="body">
+  <!-- contenido del canvas  -->
     <div class="content">
+        <!-- Canvas que contiene el tetris -->
         <div class="cont-canvas">
             <canvas id="tetris"  ></canvas>  
         </div>
+        <!-- Texto -->
         <div class="text">
             <div class="next">Next Piece:</div>
+            <!-- Canvas que muestra la pieza siguiente -->
             <canvas id="nextPiece" width="100px" height="100px"></canvas> <br>
             <div>Score:</div>
             <div id="score"></div>
@@ -27,10 +31,11 @@
             <div>Level:</div>
             <div id="level"></div>
             <br>
+            <!-- Botón para pausar el juego -->
             <button onclick="pausar()" class="btn btn-play">Pause / Play</button>
         </div>   
-
     </div>
+    <!-- Botones para controlar las fichas en la pantalla -->
     <div class="botones">
         <button><i id="left" class="fa-solid fa-arrow-left"></i></button>
         <button><i id="right" class="fa-solid fa-arrow-right"></i></button>
@@ -41,7 +46,7 @@
     <!-- The Modal -->
     <div class="modal" id="myModal">
       <div class="modal-dialog modal-dialog-centered">
-        
+
         <div class="modal-content">
     
           <!-- Modal Header -->
@@ -93,7 +98,7 @@
           </div> 
         </div> 
       </div>
-    <!-- <div class="modal-backdrop"></div> -->
+    <!-- Nuetras funciones en JS -->
     <script src="src/script.js"></script>
 </body>
 </html>
