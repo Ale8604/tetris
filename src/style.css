@@ -156,6 +156,7 @@ body {
         border-radius: 0.5rem;
         
     }
+
 }
 
 @media (min-height: 650px) and (max-height: 991px) {
@@ -171,7 +172,7 @@ body {
     }
 
 }
-@media (max-height: 649px) {
+@media (max-height: 650px) {
     .text {
         font-size: 0.875rem;
         margin: auto;
@@ -191,14 +192,13 @@ body {
         font-size: 1rem;
         margin: 2% auto auto auto;
     }
-    .botones button {
-        margin: 1%;
-    }
-    .cont-canvas {
-        height: auto;
-    }
+
+    .cont-canvas{
+        height: 410px;
+   }
     .modal-body {
         font-size: 1rem;
     }
+
 
 }
